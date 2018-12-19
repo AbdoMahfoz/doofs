@@ -11,7 +11,8 @@ static public class Graph
         {
             new Node()
             {
-                nodeType = NodeType.Start
+                nodeType = NodeType.Start,
+                ID = 0
             }
         };
         GenerateUniquePath(Distance, Nodes[0], Nodes);
@@ -22,33 +23,37 @@ static public class Graph
     static void GenerateUselessPath(List<Node> Nodes, int limit)
     {
         Node cur = new Node();
-        Queue<Node> q = new Queue<Node>();
-        for(int i = 1; i < Nodes.Count -1; i++)
+        List<Node> StartUseless = new List<Node>(Nodes);
+        StartUseless.RemoveAt(StartUseless.Count - 1);
+        for (int i = 0; i < limit; i++)
         {
-            q.Enqueue(Nodes[i]);
-        }
-        while(q.Count > 0 && limit > 0)
-        {
-            cur = q.Dequeue();
-            for(int i = 0; i < 4; i++)
+            int index = rnd.Next(0, StartUseless.Count - 1);
+            for (int j = 0; j < 4; j++)
             {
-                if (cur.Doors[i] != null)
-                    continue;
-                int n = rnd.Next(0, 1);
-                if(n == 1)
+                if (StartUseless[index].Doors[j] == null)
                 {
                     Node next = new Node()
                     {
-                        nodeType = NodeType.Useless
+                        nodeType = NodeType.Useless,
+                        ID = Nodes.Count
                     };
-                    next.Doors[(i + 2) % 4] = cur;
-                    cur.Doors[i] = next;
-                    q.Enqueue(next);
-                    limit--;
+                    next.Doors[(j + 2) % 4] = StartUseless[index];
+                    StartUseless[index].Doors[j] = next;
                     Nodes.Add(next);
+                    StartUseless.Add(next);
+                    int cnt = 0;
+                    for (int z = 0; z < 4; z++)
+                    {
+                        if (StartUseless[index].Doors[z] == null)
+                            cnt++;
+                    }
+                    if (cnt == 0)
+                        StartUseless.RemoveAt(index);
+                    break;
                 }
             }
         }
+
     }
     static void GenerateUniquePath(int Distance, Node Self, List<Node> Nodes)
     {
@@ -56,7 +61,8 @@ static public class Graph
             return;
         Node next = new Node()
         {
-            nodeType = NodeType.Path
+            nodeType = NodeType.Path,
+            ID = Nodes.Count
         };
         int n = rnd.Next(0, 3);
         while (Self.Doors[n] != null)
