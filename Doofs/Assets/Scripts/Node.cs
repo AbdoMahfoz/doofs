@@ -1,6 +1,6 @@
-﻿
-public enum RoomType { }
+﻿public enum RoomType { }
 public enum NodeType { Start, End, Useless, Path }
+
 public class Node
 {
     /// <summary>

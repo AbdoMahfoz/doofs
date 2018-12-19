@@ -4,7 +4,7 @@ static public class Graph
 {
     static public int Distance { get; set; }
     static System.Random rnd = new System.Random();
-    static public List<Node> CreateGraph(int Distance, int NodeLimit)
+    static public Node[] CreateGraph(int Distance, int NodeLimit)
     {
         Graph.Distance = Distance;
         List<Node> Nodes = new List<Node>()
@@ -18,11 +18,10 @@ static public class Graph
         GenerateUniquePath(Distance, Nodes[0], Nodes);
         Nodes[Nodes.Count - 1].nodeType = NodeType.End;
         GenerateUselessPath(Nodes, NodeLimit);
-        return Nodes;
+        return Nodes.ToArray();
     }
     static void GenerateUselessPath(List<Node> Nodes, int limit)
     {
-        Node cur = new Node();
         List<Node> StartUseless = new List<Node>(Nodes);
         StartUseless.RemoveAt(StartUseless.Count - 1);
         for (int i = 0; i < limit; i++)
